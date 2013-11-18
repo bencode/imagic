@@ -3,6 +3,7 @@ var Canvas = require('canvas'),
 
 
 var server = Http.createServer(function(req, res) {
+console.log(req.url)
 	var url = req.url,
 		pattern = /^\/([^?]+)(?:\?(.+))?$/,
 		match = pattern.exec(url);
@@ -104,8 +105,8 @@ var error = function(res, e) {
 };
 
 
-var host = '127.0.0.1',
-	port = 5678;
+var host = '10.16.24.74',
+	port = 10100;
 
 server.listen(port, host);
 
