@@ -59,13 +59,15 @@ var routes = {
 
 			res.writeHead(200, {'Content-Type': 'image/jpeg'});
 
-			var canvas = new Canvas(width, height),
-				ctx = canvas.getContext('2d');
-
 			var img = new Canvas.Image();
 			img.src = data;
 
-			ctx.drawImage(img, 0, 0, width, height);
+			var o = calc(width, height, img.width, img.height);
+
+			var canvas = new Canvas(o[0], o[1]),
+				ctx = canvas.getContext('2d');
+
+			ctx.drawImage(img, 0, 0, o[0], o[1]);
 			
 			var stream = canvas.jpegStream();
 			stream.on('data', function(imgdata) {
@@ -78,6 +80,24 @@ var routes = {
 		});
 	}
 
+};
+
+
+var calc = function(width, height, w, h) {
+	var flag = w * height - h * width >= 0,
+		size = flag ? width : height;
+
+	if (flag && w > size) {
+		h = size * h / w;
+		w = size;
+	} 
+	
+	if (!flag && h > size) {
+		w = size * w / h;
+		h = size;
+	}
+	
+	return [Math.round(w), Math.round(h)];
 };
 
 
@@ -105,7 +125,7 @@ var error = function(res, e) {
 };
 
 
-var host = '10.16.24.74',
+var host = '127.0.0.1',
 	port = 10100;
 
 server.listen(port, host);
