@@ -48,6 +48,8 @@ function unparam(qs) {
 var routes = {
 	'mimg': function(params, req, res) {
 		var src = params.src,
+			width = parseInt(params.w, 10) || 100,
+			height = parseInt(params.h, 10) || width;
 
 		getUrlData(src, function(e, data) {
 			if (e) {
@@ -60,10 +62,9 @@ var routes = {
 			var img = new Canvas.Image();
 			img.src = data;
 
-			var width = parseInt(params.w, 10) || img.width,
-				height = parseInt(params.h, 10) || width;
-
 			var o = calc(width, height, img.width, img.height);
+
+			console.log(o);
 
 			var canvas = new Canvas(o[0], o[1]),
 				ctx = canvas.getContext('2d');
