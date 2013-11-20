@@ -117,18 +117,23 @@ var getUrlData = function(url, fn) {
 		res.on('end', function() {
 			fn(null, Buffer.concat(list));
 		});
+	}).on('error', function(e) {
+		e.statusCode = 500;
+		fn(500);
 	});
 };
 
 
 var error = function(res, e) {
-	res.writeHead(e.statusCode, { 'Content-Type': 'text/html'});
+	res.writeHead(e.statusCode || 500, { 'Content-Type': 'text/html'});
 	res.end('<h1>' + (e.message || 'Error!!!') + '</h1>');
 };
 
 
 var host = '127.0.0.1',
 	port = 10100;
+
+host = '10.16.24.74';
 
 server.listen(port, host);
 
