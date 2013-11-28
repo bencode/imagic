@@ -2,27 +2,28 @@ var Canvas = require('canvas'),
 	Http = require('http');
 
 
-var server = Http.createServer(function(req, res) {
-console.log(req.url)
-	var url = req.url,
-		pattern = /^\/([^?]+)(?:\?(.+))?$/,
-		match = pattern.exec(url);
+function createServer() {
+	return Http.createServer(function(req, res) {
+		var url = req.url,
+			pattern = /^\/([^?]+)(?:\?(.+))?$/,
+			match = pattern.exec(url);
 
-	if (!match) {
-		return error(res, { statusCode: 304 });
-	}
+		if (!match) {
+			return error(res, { statusCode: 304 });
+		}
 
-	var route = match[1];
-		params = match[2] ? unparam(match[2]) : {};
+		var route = match[1];
+			params = match[2] ? unparam(match[2]) : {};
 
-	console.log('route:', route, ', params:', params);
+		console.log('route:', route, ', params:', params);
 
-	if (!routes[route]) {
-		return error(res, { statusCode: 304 })
-	}
+		if (!routes[route]) {
+			return error(res, { statusCode: 304 })
+		}
 
-	routes[route](params, req, res);
-});
+		routes[route](params, req, res);
+	});
+}
 
 
 function unparam(qs) {
@@ -63,8 +64,6 @@ var routes = {
 			img.src = data;
 
 			var o = calc(width, height, img.width, img.height);
-
-			console.log(o);
 
 			var canvas = new Canvas(o[0], o[1]),
 				ctx = canvas.getContext('2d');
@@ -127,10 +126,5 @@ var error = function(res, e) {
 };
 
 
-var host = '127.0.0.1',
-	port = 10100;
-
-server.listen(port, host);
-
-console.log('Server running at ' + host + ':' + port);
+createServer().listen(10100);
 
